@@ -1,0 +1,146 @@
+# ai_parlay_oracle_project: This file contains code for AI Parlay Oracle prototype.
+
+# app.py
+from flask import Flask, render_template, request, jsonify
+
+app = Flask(__name__)
+
+# Mock prediction function
+def get_mock_prediction(player_name):
+    # Replace this with your actual predictive model logic
+    return {
+        "player": player_name.title(),
+        "yards": round(len(player_name) * 42.3, 1),
+        "receptions": round(len(player_name) * 0.7, 1),
+        "touchdowns": round(len(player_name) * 0.2, 1),
+        "confidence": 75  # Example confidence score
+    }
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+@app.route("/predict", methods=["POST"])
+def predict():
+    player = request.form.get("player")
+    prediction = get_mock_prediction(player)
+    return render_template("predictions.html", prediction=prediction)
+
+@app.route("/api/predict", methods=["POST"])
+def api_predict():
+    player = request.json.get("player")
+    prediction = get_mock_prediction(player)
+    return jsonify(prediction)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+# templates/base.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Parlay Oracle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>AI Parlay Oracle</h1>
+        <nav>
+            <a href="/">Home</a>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
+
+# templates/index.html
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <h2>Predictive Analytics for Sports Creators</h2>
+    <p>Enter a player’s name to see a mock prediction. Replace this logic with your model!</p>
+    <form action="/predict" method="POST" id="prediction-form">
+        <input type="text" name="player" placeholder="Enter player name" required>
+        <button type="submit">Predict</button>
+    </form>
+</section>
+{% endblock %}
+
+
+# templates/predictions.html
+{% extends "base.html" %}
+{% block content %}
+<section class="results">
+    <h2>Prediction Results</h2>
+    <p><strong>Player:</strong> {{ prediction.player }}</p>
+    <p><strong>Yards:</strong> {{ prediction.yards }}</p>
+    <p><strong>Receptions:</strong> {{ prediction.receptions }}</p>
+    <p><strong>Touchdowns:</strong> {{ prediction.touchdowns }}</p>
+    <p><strong>Confidence:</strong> {{ prediction.confidence }}%</p>
+    <a href="/">Back to Home</a>
+</section>
+{% endblock %}
+
+
+# static/css/style.css
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+nav a {
+    color: #fff;
+    margin: 0 1rem;
+    text-decoration: none;
+}
+.hero, .results {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+form input, form button {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+# README.md
+# AI Parlay Oracle (Prototype)
+
+## Overview
+This is a simple Flask-based prototype for a sports prediction API and web app targeted at content creators. The current version uses a mock prediction function. Replace it with your own analytics model.
+
+## How to Run
+1. Install Python dependencies:
+   ```
+   pip install Flask
+   ```
+2. Start the Flask app:
+   ```
+   python app.py
+   ```
+3. Navigate to `http://127.0.0.1:5000/` to interact with the web interface.
+
+## Next Steps
+- Integrate your predictive model in `get_mock_prediction`.
+- Add user authentication and subscription tiers (e.g., using Stripe).
+- Implement a polished front-end design.
+- Build API endpoints for Discord bots and third-party integrations.
