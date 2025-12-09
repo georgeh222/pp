@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <h2>Predictive Analytics for Sports Creators</h2>
+    <p>Enter a player’s name to see a mock prediction. Replace this logic with your model!</p>
+    <form action="/predict" method="POST" id="prediction-form">
+        <input type="text" name="player" placeholder="Enter player name" required>
+        <button type="submit">Predict</button>
+    </form>
+</section>
+{% endblock %}
